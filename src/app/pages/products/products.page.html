@@ -35,7 +35,8 @@
 
   <ion-list *ngIf="!isLoading && !errorMessage && products.length > 0">
     <ion-item
-      *ngFor="let product of products"
+      *ngFor="let product of pagedProducts"
+      lines="none"
       button
       detail="true"
       class="product-item"
@@ -56,4 +57,34 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <div *ngIf="!isLoading && !errorMessage && totalProducts > pageSize" class="paginator">
+    <ion-button
+      size="small"
+      fill="outline"
+      [disabled]="currentPage === 1"
+      (click)="goToPreviousPage()"
+    >
+      Anterior
+    </ion-button>
+
+    <ion-button
+      *ngFor="let page of getVisiblePages()"
+      size="small"
+      [fill]="page === currentPage ? 'solid' : 'outline'"
+      [color]="page === currentPage ? 'primary' : 'medium'"
+      (click)="goToPage(page)"
+    >
+      {{ page }}
+    </ion-button>
+
+    <ion-button
+      size="small"
+      fill="outline"
+      [disabled]="currentPage === totalPages"
+      (click)="goToNextPage()"
+    >
+      Siguiente
+    </ion-button>
+  </div>
 </ion-content>
