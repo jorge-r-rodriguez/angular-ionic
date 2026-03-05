@@ -45,7 +45,7 @@ export class ProductsPage implements OnInit {
   isLoading = true;
   errorMessage = '';
   readonly fallbackImage = 'assets/icon/favicon.png';
-  readonly pageSize = 10;
+  readonly pageSize = 8;
   currentPage = 1;
   totalPages = 1;
   totalProducts = 0;
@@ -105,17 +105,24 @@ export class ProductsPage implements OnInit {
   }
 
   getVisiblePages(): number[] {
-    if (this.totalPages <= 5) {
+    const maxVisible = 3;
+
+    if (this.totalPages <= maxVisible) {
       return Array.from({ length: this.totalPages }, (_, index) => index + 1);
     }
 
-    const start = Math.max(1, this.currentPage - 2);
-    const end = Math.min(this.totalPages, start + 4);
-    const adjustedStart = Math.max(1, end - 4);
+    const half = Math.floor(maxVisible / 2);
+    let start = Math.max(1, this.currentPage - half);
+    let end = start + maxVisible - 1;
+
+    if (end > this.totalPages) {
+      end = this.totalPages;
+      start = end - maxVisible + 1;
+    }
 
     return Array.from(
-      { length: end - adjustedStart + 1 },
-      (_, index) => adjustedStart + index
+      { length: end - start + 1 },
+      (_, index) => start + index
     );
   }
 

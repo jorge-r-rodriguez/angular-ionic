@@ -82,4 +82,5 @@
 
 .add-cart-btn {
   margin-top: var(--spacing-md);
+  margin-bottom: calc(var(--spacing-md) + var(--app-safe-bottom, 0px));
 }

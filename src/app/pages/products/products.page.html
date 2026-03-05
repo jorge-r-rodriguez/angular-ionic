@@ -60,34 +60,40 @@
 
   <div *ngIf="!isLoading && !errorMessage && totalProducts > pageSize" class="paginator">
     <ion-button
-      class="pager-nav"
+      class="pager-arrow"
       size="small"
       fill="outline"
       [disabled]="currentPage === 1"
       (click)="goToPreviousPage()"
+      aria-label="Pagina anterior"
     >
-      ‹ Anterior
+      ‹
     </ion-button>
 
-    <ion-button
-      *ngFor="let page of getVisiblePages()"
-      class="pager-page"
-      size="small"
-      [fill]="page === currentPage ? 'solid' : 'outline'"
-      [color]="page === currentPage ? 'primary' : 'medium'"
-      (click)="goToPage(page)"
-    >
-      {{ page }}
-    </ion-button>
+    <div class="pager-numbers">
+      <ion-button
+        *ngFor="let page of getVisiblePages()"
+        class="pager-page"
+        size="small"
+        [fill]="page === currentPage ? 'solid' : 'outline'"
+        [color]="page === currentPage ? 'primary' : 'medium'"
+        (click)="goToPage(page)"
+      >
+        {{ page }}
+      </ion-button>
+    </div>
+
+    <div class="pager-meta">{{ currentPage }} / {{ totalPages }}</div>
 
     <ion-button
-      class="pager-nav"
+      class="pager-arrow"
       size="small"
       fill="outline"
       [disabled]="currentPage === totalPages"
       (click)="goToNextPage()"
+      aria-label="Pagina siguiente"
     >
-      Siguiente ›
+      ›
     </ion-button>
   </div>
 </ion-content>
