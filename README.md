@@ -151,7 +151,7 @@ npm run lint
 ## APK Android
 Descargar APK para instalacion directa en Android:
 
-`https://github.com/jorge-r-rodriguez/angular-ionic/releases/download/v1.0/app-debug.apk`
+[Descargar APK (app-debug.apk)](https://github.com/jorge-r-rodriguez/angular-ionic/releases/download/v1.0/app-debug.apk)
 
 El APK fue compilado y probado correctamente en **Android Studio** y en **dispositivo Android fisico**.
 
