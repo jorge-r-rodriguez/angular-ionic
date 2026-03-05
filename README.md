@@ -22,7 +22,7 @@ Endpoints usados:
   - imagen
   - nombre
   - precio
-  - paginacion (10 elementos por pagina)
+  - paginacion (8 elementos por pagina)
 - Pantalla de detalle de producto con:
   - imagen
   - nombre
