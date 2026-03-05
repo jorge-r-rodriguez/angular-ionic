@@ -16,7 +16,6 @@ import {
   IonIcon,
   IonItem,
   IonLabel,
-  IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
 
@@ -38,7 +37,6 @@ import {
     IonIcon,
     IonItem,
     IonLabel,
-    IonTitle,
     IonToolbar,
     CommonModule,
   ],
@@ -49,7 +47,7 @@ export class ProfilePage {
   readonly user = {
     name: 'Juan Perez',
     email: 'juan.perez@ejemplo.com',
-    company: 'Distribuciones SDI SL',
+    company: 'SDi Digital Group',
   };
 
   constructor() {

@@ -1,10 +1,13 @@
 ﻿import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { personOutline } from 'ionicons/icons';
 import {
   IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonItem,
   IonLabel,
   IonList,
@@ -25,6 +28,7 @@ import { Product, getFormattedPrice, getLocalizedText } from '../../models/produ
     IonButton,
     IonContent,
     IonHeader,
+    IonIcon,
     IonItem,
     IonLabel,
     IonList,
@@ -49,6 +53,10 @@ export class ProductsPage implements OnInit {
   currentPage = 1;
   totalPages = 1;
   totalProducts = 0;
+
+  constructor() {
+    addIcons({ personOutline });
+  }
 
   ngOnInit(): void {
     this.loadProducts();

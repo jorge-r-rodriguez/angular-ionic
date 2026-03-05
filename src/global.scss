@@ -43,3 +43,35 @@
 ion-content {
   --padding-bottom: calc(var(--app-safe-bottom) + 12px);
 }
+
+ion-toolbar.app-toolbar {
+  position: relative;
+  --min-height: 60px;
+}
+
+.toolbar-logo-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.toolbar-logo {
+  display: block;
+  height: 30px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  transform: scale(1.8);
+  transform-origin: center;
+}
+
+.toolbar-brand-icon {
+  font-size: 18px;
+  color: #ffffff;
+}

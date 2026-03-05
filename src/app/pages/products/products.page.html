@@ -1,7 +1,10 @@
 ﻿<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title>Catalogo</ion-title>
-    <ion-button slot="end" fill="clear" color="light" routerLink="/profile">
+  <ion-toolbar color="primary" class="app-toolbar">
+    <div class="toolbar-logo-center">
+      <img src="assets/img/logo-sdi.png" alt="SDI App" class="toolbar-logo" />
+    </div>
+    <ion-button slot="end" fill="clear" color="light" routerLink="/profile" class="profile-btn">
+      <ion-icon name="person-outline" slot="start"></ion-icon>
       Perfil
     </ion-button>
   </ion-toolbar>
