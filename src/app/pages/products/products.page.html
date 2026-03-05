@@ -11,15 +11,62 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Catalogo</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <section class="catalog-hero" *ngIf="!isLoading && !errorMessage">
+    <span class="meta-chip hero-count-chip">{{ totalProducts }} productos</span>
+    <h1 class="hero-title">Productos</h1>
+    <p class="hero-subtitle">Explora el catalogo y revisa el detalle de cada producto.</p>
+
+    <div class="search-box">
+      <ion-icon name="search-outline"></ion-icon>
+      <input
+        type="search"
+        placeholder="Buscar producto"
+        [value]="searchTerm"
+        (input)="onSearchChange($event)"
+      />
+    </div>
+
+    <div class="sort-row">
+      <button class="sort-chip" [class.active]="isSortActive('featured')" (click)="setSortMode('featured')">
+        Top
+      </button>
+      <button class="sort-chip" [class.active]="isSortActive('nameAsc')" (click)="setSortMode('nameAsc')">
+        A-Z
+      </button>
+      <button
+        class="sort-chip"
+        [class.active]="isSortActive('priceAsc')"
+        (click)="setSortMode('priceAsc')"
+        aria-label="Ordenar por menor precio"
+        title="Ordenar por menor precio"
+      >
+        Menor $
+      </button>
+      <button
+        class="sort-chip"
+        [class.active]="isSortActive('priceDesc')"
+        (click)="setSortMode('priceDesc')"
+        aria-label="Ordenar por mayor precio"
+        title="Ordenar por mayor precio"
+      >
+        Mayor $
+      </button>
+    </div>
+  </section>
 
   <div *ngIf="isLoading" class="state-container">
     <ion-spinner name="crescent"></ion-spinner>
     <p>Cargando productos...</p>
+
+    <div class="skeleton-list">
+      <div class="skeleton-card" *ngFor="let _ of skeletonItems">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-lines">
+          <div class="line line-title"></div>
+          <div class="line line-price"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="errorMessage && !isLoading" class="state-container error-state">
@@ -32,11 +79,13 @@
     </ion-button>
   </div>
 
-  <div *ngIf="!isLoading && !errorMessage && products.length === 0" class="state-container">
-    <p>No se encontraron productos.</p>
+  <div *ngIf="!isLoading && !errorMessage && filteredProducts.length === 0" class="state-container empty-state">
+    <h3>No encontramos resultados</h3>
+    <p>Prueba con otro nombre o cambia el orden.</p>
+    <ion-button fill="outline" (click)="clearFilters()">Limpiar filtros</ion-button>
   </div>
 
-  <ion-list *ngIf="!isLoading && !errorMessage && products.length > 0">
+  <ion-list *ngIf="!isLoading && !errorMessage && filteredProducts.length > 0" class="products-list">
     <ion-item
       *ngFor="let product of pagedProducts"
       lines="none"
@@ -61,7 +110,7 @@
     </ion-item>
   </ion-list>
 
-  <div *ngIf="!isLoading && !errorMessage && totalProducts > pageSize" class="paginator">
+  <div *ngIf="!isLoading && !errorMessage && totalProducts > pageSize" class="paginator sticky-paginator">
     <ion-button
       class="pager-arrow"
       size="small"
