@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { personOutline } from 'ionicons/icons';
+import { personOutline, searchOutline } from 'ionicons/icons';
 import {
   IonButton,
   IonContent,
@@ -13,11 +13,12 @@ import {
   IonList,
   IonSpinner,
   IonText,
-  IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { ApiService } from '../../services/api.service';
 import { Product, getFormattedPrice, getLocalizedText } from '../../models/product';
+
+type SortMode = 'featured' | 'nameAsc' | 'priceAsc' | 'priceDesc';
 
 @Component({
   selector: 'app-products',
@@ -34,7 +35,6 @@ import { Product, getFormattedPrice, getLocalizedText } from '../../models/produ
     IonList,
     IonSpinner,
     IonText,
-    IonTitle,
     IonToolbar,
     CommonModule,
     RouterLink,
@@ -45,17 +45,22 @@ export class ProductsPage implements OnInit {
   private readonly router = inject(Router);
 
   products: Product[] = [];
+  filteredProducts: Product[] = [];
   pagedProducts: Product[] = [];
   isLoading = true;
   errorMessage = '';
   readonly fallbackImage = 'assets/icon/favicon.png';
   readonly pageSize = 8;
+  readonly skeletonItems = Array.from({ length: 6 });
+
+  searchTerm = '';
+  sortMode: SortMode = 'featured';
   currentPage = 1;
   totalPages = 1;
   totalProducts = 0;
 
   constructor() {
-    addIcons({ personOutline });
+    addIcons({ personOutline, searchOutline });
   }
 
   ngOnInit(): void {
@@ -69,10 +74,8 @@ export class ProductsPage implements OnInit {
     this.apiService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
-        this.totalProducts = products.length;
-        this.totalPages = Math.max(1, Math.ceil(this.totalProducts / this.pageSize));
         this.currentPage = 1;
-        this.updatePagedProducts();
+        this.applyFiltersAndPagination();
         this.isLoading = false;
       },
       error: (error: Error) => {
@@ -85,6 +88,34 @@ export class ProductsPage implements OnInit {
 
   goToDetail(product: Product): void {
     this.router.navigate(['/product-detail', product.id]);
+  }
+
+  onSearchChange(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    this.searchTerm = input?.value ?? '';
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
+  }
+
+  setSortMode(mode: SortMode): void {
+    if (this.sortMode === mode) {
+      return;
+    }
+
+    this.sortMode = mode;
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.sortMode = 'featured';
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
+  }
+
+  isSortActive(mode: SortMode): boolean {
+    return this.sortMode === mode;
   }
 
   getProductName(product: Product): string {
@@ -128,16 +159,7 @@ export class ProductsPage implements OnInit {
       start = end - maxVisible + 1;
     }
 
-    return Array.from(
-      { length: end - start + 1 },
-      (_, index) => start + index
-    );
-  }
-
-  private updatePagedProducts(): void {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.pagedProducts = this.products.slice(startIndex, endIndex);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
   }
 
   getProductImage(product: Product): string {
@@ -149,5 +171,47 @@ export class ProductsPage implements OnInit {
     if (img) {
       img.src = this.fallbackImage;
     }
+  }
+
+  private applyFiltersAndPagination(): void {
+    const normalizedSearch = this.searchTerm.trim().toLowerCase();
+
+    let list = [...this.products];
+
+    if (normalizedSearch) {
+      list = list.filter((product) =>
+        this.getProductName(product).toLowerCase().includes(normalizedSearch)
+      );
+    }
+
+    if (this.sortMode === 'nameAsc') {
+      list.sort((a, b) => this.getProductName(a).localeCompare(this.getProductName(b)));
+    }
+
+    if (this.sortMode === 'priceAsc' || this.sortMode === 'priceDesc') {
+      const factor = this.sortMode === 'priceAsc' ? 1 : -1;
+      list.sort((a, b) => (this.toNumericPrice(a.price) - this.toNumericPrice(b.price)) * factor);
+    }
+
+    this.filteredProducts = list;
+    this.totalProducts = list.length;
+    this.totalPages = Math.max(1, Math.ceil(this.totalProducts / this.pageSize));
+
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+
+    this.updatePagedProducts();
+  }
+
+  private updatePagedProducts(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedProducts = this.filteredProducts.slice(startIndex, endIndex);
+  }
+
+  private toNumericPrice(price: string | number): number {
+    const numeric = typeof price === 'string' ? Number.parseFloat(price) : Number(price);
+    return Number.isNaN(numeric) ? 0 : numeric;
   }
 }
