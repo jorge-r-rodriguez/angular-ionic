@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Capacitor, CapacitorHttp } from '@capacitor/core';
+import { Observable, catchError, from, map, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Product, ProductsResponse, ProductResponse } from '../models/product';
 
@@ -11,6 +12,7 @@ export class ApiService {
   private readonly baseUrl = this.getBaseUrl();
   private readonly apiKey = environment.apiKey;
   private readonly http = inject(HttpClient);
+  private readonly isNative = Capacitor.isNativePlatform();
 
   private getBaseUrl(): string {
     const isLocalhost =
@@ -34,6 +36,10 @@ export class ApiService {
   }
 
   getProducts(): Observable<Product[]> {
+    if (this.isNative) {
+      return this.getProductsNative();
+    }
+
     const url =
       `${this.baseUrl}/products?display=[id,name,price,id_default_image]&output_format=JSON`;
 
@@ -48,6 +54,10 @@ export class ApiService {
   }
 
   getProduct(id: string | number): Observable<Product> {
+    if (this.isNative) {
+      return this.getProductNative(id);
+    }
+
     const url = `${this.baseUrl}/products/${id}?output_format=JSON`;
 
     return this.http.get<ProductResponse>(url, { headers: this.getHeaders() }).pipe(
@@ -62,6 +72,64 @@ export class ApiService {
         return throwError(() => new Error('No se pudo obtener el detalle del producto.'));
       })
     );
+  }
+
+  private getProductsNative(): Observable<Product[]> {
+    const url =
+      `${environment.apiUrl}/products?display=[id,name,price,id_default_image]&output_format=JSON`;
+
+    return from(
+      CapacitorHttp.get({
+        url,
+        headers: {
+          Authorization: `Basic ${btoa(`${this.apiKey}:`)}`,
+          Accept: 'application/json',
+        },
+      })
+    ).pipe(
+      map((response) => this.parseNativeData<ProductsResponse>(response.data)),
+      map((response) => response.products ?? []),
+      map((products) => products.map((product) => this.normalizeProduct(product))),
+      catchError((error) => {
+        console.error('Native error fetching product list', error);
+        return throwError(() => new Error('No se pudo obtener el listado de productos.'));
+      })
+    );
+  }
+
+  private getProductNative(id: string | number): Observable<Product> {
+    const url = `${environment.apiUrl}/products/${id}?output_format=JSON`;
+
+    return from(
+      CapacitorHttp.get({
+        url,
+        headers: {
+          Authorization: `Basic ${btoa(`${this.apiKey}:`)}`,
+          Accept: 'application/json',
+        },
+      })
+    ).pipe(
+      map((response) => this.parseNativeData<ProductResponse>(response.data)),
+      map((response) => {
+        if (!response.product) {
+          throw new Error('Producto no encontrado.');
+        }
+
+        return this.normalizeProduct(response.product);
+      }),
+      catchError((error) => {
+        console.error(`Native error fetching product ${id}`, error);
+        return throwError(() => new Error('No se pudo obtener el detalle del producto.'));
+      })
+    );
+  }
+
+  private parseNativeData<T>(data: unknown): T {
+    if (typeof data === 'string') {
+      return JSON.parse(data) as T;
+    }
+
+    return data as T;
   }
 
   private normalizeProduct(product: Product): Product {
