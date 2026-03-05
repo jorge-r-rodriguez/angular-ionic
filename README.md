@@ -64,7 +64,7 @@ src/theme/
   - manejo de estructuras de texto multilenguaje
 - Se fuerza tema claro para evitar diferencias de visualizacion entre emulador y dispositivo.
 - Se agrego `safe-area` inferior para que paginador y botones no se superpongan con la barra de navegacion del sistema.
-- Se utiliza la interfaz visual por defecto de Ionic (componentes base y estilos nativos de Ionic), sin un sistema de diseno custom avanzado.
+- En su mayoria se utilizo la interfaz visual por defecto de Ionic (componentes base y estilos nativos) por practicidad, consistencia entre plataformas y optimizacion de tiempos dentro del alcance de la prueba tecnica.
 
 ## Requisitos previos
 - Node.js 20+ recomendado
