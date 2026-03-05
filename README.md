@@ -57,7 +57,7 @@ src/theme/
 ## Decisiones tecnicas
 - Se usa `ApiService` centralizado para todas las llamadas al webservice.
 - En entorno web local se usa proxy (`/api`) para evitar CORS durante desarrollo.
-- En Android/iOS nativo se usa `CapacitorHttp` para evitar restricciones CORS del WebView.
+- En Android nativo se usa `CapacitorHttp` para evitar restricciones CORS del WebView.
 - Se normaliza la respuesta del producto para:
   - tipado consistente
   - construccion de `imageUrl`
