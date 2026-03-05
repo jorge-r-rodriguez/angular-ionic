@@ -41,9 +41,14 @@ export class ProductsPage implements OnInit {
   private readonly router = inject(Router);
 
   products: Product[] = [];
+  pagedProducts: Product[] = [];
   isLoading = true;
   errorMessage = '';
   readonly fallbackImage = 'assets/icon/favicon.png';
+  readonly pageSize = 10;
+  currentPage = 1;
+  totalPages = 1;
+  totalProducts = 0;
 
   ngOnInit(): void {
     this.loadProducts();
@@ -56,6 +61,10 @@ export class ProductsPage implements OnInit {
     this.apiService.getProducts().subscribe({
       next: (products) => {
         this.products = products;
+        this.totalProducts = products.length;
+        this.totalPages = Math.max(1, Math.ceil(this.totalProducts / this.pageSize));
+        this.currentPage = 1;
+        this.updatePagedProducts();
         this.isLoading = false;
       },
       error: (error: Error) => {
@@ -76,6 +85,44 @@ export class ProductsPage implements OnInit {
 
   getProductPrice(product: Product): string {
     return getFormattedPrice(product.price);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) {
+      return;
+    }
+
+    this.currentPage = page;
+    this.updatePagedProducts();
+  }
+
+  goToNextPage(): void {
+    this.goToPage(this.currentPage + 1);
+  }
+
+  goToPreviousPage(): void {
+    this.goToPage(this.currentPage - 1);
+  }
+
+  getVisiblePages(): number[] {
+    if (this.totalPages <= 5) {
+      return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+    }
+
+    const start = Math.max(1, this.currentPage - 2);
+    const end = Math.min(this.totalPages, start + 4);
+    const adjustedStart = Math.max(1, end - 4);
+
+    return Array.from(
+      { length: end - adjustedStart + 1 },
+      (_, index) => adjustedStart + index
+    );
+  }
+
+  private updatePagedProducts(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedProducts = this.products.slice(startIndex, endIndex);
   }
 
   getProductImage(product: Product): string {
