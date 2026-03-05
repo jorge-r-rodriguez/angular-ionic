@@ -14,7 +14,6 @@ import {
   IonHeader,
   IonSpinner,
   IonText,
-  IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { ApiService } from '../../services/api.service';
@@ -38,7 +37,6 @@ import { Product, getFormattedPrice, getLocalizedText } from '../../models/produ
     IonHeader,
     IonSpinner,
     IonText,
-    IonTitle,
     IonToolbar,
     CommonModule,
     RouterLink,
