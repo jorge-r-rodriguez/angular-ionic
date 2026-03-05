@@ -61,7 +61,7 @@ src/theme/
 - Se normaliza la respuesta del producto para:
   - tipado consistente
   - construccion de `imageUrl`
-  - manejo de estructuras de texto multilenguaje
+  - manejo de estructuras de texto
 - Se fuerza tema claro para evitar diferencias de visualizacion entre emulador y dispositivo.
 - Se agrego `safe-area` inferior para que paginador y botones no se superpongan con la barra de navegacion del sistema.
 - En su mayoria se utilizo la interfaz visual por defecto de Ionic (componentes base y estilos nativos) por practicidad, consistencia entre plataformas y optimizacion de tiempos dentro del alcance de la prueba tecnica.
