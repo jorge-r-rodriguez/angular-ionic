@@ -75,44 +75,47 @@
 
 .paginator {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 6px;
   margin-top: 16px;
-  padding: 6px 4px 14px;
+  padding: 8px 4px calc(16px + var(--app-safe-bottom, 0px));
   flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 }
 
 .pager-page,
-.pager-nav {
+.pager-arrow {
   margin: 0;
-  min-height: 34px;
-  --border-radius: 10px;
+  min-height: 32px;
+  --border-radius: 9px;
   --box-shadow: none;
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: 0;
 }
 
 .pager-page {
-  min-width: 34px;
+  min-width: 32px;
   --padding-start: 0;
   --padding-end: 0;
 }
 
-.pager-nav {
-  --padding-start: 10px;
-  --padding-end: 10px;
+.pager-arrow {
+  min-width: 32px;
+  --padding-start: 0;
+  --padding-end: 0;
+  font-size: 18px;
 }
 
-@media (min-width: 480px) {
-  .paginator {
-    justify-content: center;
-  }
+.pager-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pager-meta {
+  min-width: 40px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
 }
