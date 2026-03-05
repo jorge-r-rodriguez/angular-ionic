@@ -1,0 +1,85 @@
+@use '../../../theme/mixins' as mixins;
+
+.state-container {
+  @include mixins.flex-center;
+  flex-direction: column;
+  height: 60vh;
+  text-align: center;
+  color: var(--ion-color-medium);
+
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+.error-state h2 {
+  margin-top: 0;
+}
+
+.retry-btn {
+  margin-top: var(--spacing-md);
+}
+
+.product-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.product-card {
+  margin: 0;
+  width: 100%;
+  @include mixins.page-section;
+  @include mixins.card-shadow;
+}
+
+.product-image {
+  width: 100%;
+  height: 250px;
+  background-color: var(--ion-color-light);
+  @include mixins.flex-center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.product-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--ion-color-dark);
+}
+
+.price-container {
+  margin-bottom: var(--spacing-md);
+  
+  .price-badge {
+    font-size: 1.25rem;
+    padding: 8px 12px;
+  }
+}
+
+.description-container {
+  h3 {
+    font-size: 1.1rem;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .description-content {
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    font-size: 1rem;
+  }
+}
+
+.add-cart-btn {
+  margin-top: var(--spacing-md);
+}

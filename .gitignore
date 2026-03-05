@@ -1,70 +1,114 @@
-# Specifies intentionally untracked files to ignore when using Git
-# http://git-scm.com/docs/gitignore
+# ------------------------------
+# Dependencies
+# ------------------------------
+node_modules/
 
-*~
-*.sw[mnpcod]
-.tmp
-*.tmp
-*.tmp.*
-UserInterfaceState.xcuserstate
-$RECYCLE.BIN/
+# ------------------------------
+# Build outputs
+# ------------------------------
+dist/
+www/
+build/
+tmp/
+temp/
+out-tsc/
+coverage/
+.sourcemaps/
+.versions/
 
+# ------------------------------
+# Angular / Ionic caches
+# ------------------------------
+.angular/
+.angular/cache/
+.ionic/
+.nx/
+.nx/cache/
+.sass-cache/
+.eslintcache
+testem.log
+
+# ------------------------------
+# Logs
+# ------------------------------
 *.log
+*.log.*
 log.txt
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
+# ------------------------------
+# Environment / secrets
+# ------------------------------
+.env
+.env.*
+!.env.example
 
-/.sourcemaps
-/.versions
-/coverage
+# ------------------------------
+# Capacitor / Android / iOS artifacts
+# (keep source projects, ignore generated/build files)
+# ------------------------------
+android/.gradle/
+android/local.properties
+android/captures/
+android/build/
+android/app/build/
+android/*.keystore
+android/**/*.keystore
+android/**/*.jks
+*.apk
+*.aab
 
-# Ionic
-/.ionic
-/www
-/platforms
-/plugins
+ios/App/App/public/
+ios/App/build/
+ios/DerivedData/
+ios/Pods/
+ios/.symlinks/
+ios/*.xcworkspace
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
-
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
+# ------------------------------
 # IDEs and editors
+# ------------------------------
 .idea/
 .project
 .classpath
+.settings/
 .c9/
 *.launch
-.settings/
 *.sublime-project
 *.sublime-workspace
+*.sw[mnpcod]
+*~
 
-# Visual Studio Code
+# VS Code (allow shared workspace config)
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+.history/
 
-
-# Miscellaneous
-/.angular
-/.angular/cache
-.sass-cache/
-/.nx
-/.nx/cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-
+# ------------------------------
 # System files
+# ------------------------------
 .DS_Store
 Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ------------------------------
+# Local / temporary files
+# ------------------------------
+.tmp
+*.tmp
+*.tmp.*
+connect.lock
+libpeerconnection.log
+typings/
+
+# ------------------------------
+# Local artifacts for this repo
+# ------------------------------
+prueba_tecnica_ionic_prestashop_v2.pdf

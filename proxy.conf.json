@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://dev.prestashop4.sdi.es",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

@@ -1,0 +1,21 @@
+﻿<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Acceso</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    <ion-card class="login-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">Catalogo de productos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="ion-text-center">
+        <p>Pulsa en Entrar para ir al listado.</p>
+        <ion-button expand="block" (click)="login()" class="login-button">
+          Entrar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,59 @@
+﻿<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Catalogo</ion-title>
+    <ion-button slot="end" fill="clear" color="light" routerLink="/profile">
+      Perfil
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Catalogo</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div *ngIf="isLoading" class="state-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando productos...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="state-container error-state">
+    <ion-text color="danger">
+      <h2>Error al cargar datos</h2>
+      <p>{{ errorMessage }}</p>
+    </ion-text>
+    <ion-button (click)="loadProducts()" fill="outline" class="retry-btn">
+      Reintentar
+    </ion-button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && products.length === 0" class="state-container">
+    <p>No se encontraron productos.</p>
+  </div>
+
+  <ion-list *ngIf="!isLoading && !errorMessage && products.length > 0">
+    <ion-item
+      *ngFor="let product of products"
+      button
+      detail="true"
+      class="product-item"
+      (click)="goToDetail(product)"
+    >
+      <div class="product-thumb" slot="start">
+        <img
+          [src]="getProductImage(product)"
+          [alt]="getProductName(product)"
+          loading="lazy"
+          (error)="onImageError($event)"
+        />
+      </div>
+
+      <ion-label>
+        <h2 class="product-name">{{ getProductName(product) }}</h2>
+        <p class="product-price">{{ getProductPrice(product) }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
