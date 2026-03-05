@@ -1,0 +1,56 @@
+﻿<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/products" text="Volver"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del producto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div *ngIf="isLoading" class="state-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando informacion...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="state-container error-state">
+    <ion-text color="danger">
+      <h2>No se pudo cargar el detalle</h2>
+      <p>{{ errorMessage }}</p>
+    </ion-text>
+    <ion-button routerLink="/products" fill="outline" class="retry-btn">
+      Volver al catalogo
+    </ion-button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && product" class="product-container">
+    <ion-card class="product-card">
+      <div class="product-image">
+        <img
+          [src]="getProductImage()"
+          [alt]="getProductName()"
+          (error)="onImageError($event)"
+        />
+      </div>
+
+      <ion-card-header>
+        <ion-card-title class="product-title">{{ getProductName() }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="price-container">
+          <ion-badge color="success" class="price-badge">{{ getProductPrice() }}</ion-badge>
+        </div>
+
+        <div class="description-container">
+          <h3>Descripcion</h3>
+          <div [innerHTML]="getProductDescription()" class="description-content"></div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" class="add-cart-btn" routerLink="/products">
+      Volver al listado
+    </ion-button>
+  </div>
+</ion-content>

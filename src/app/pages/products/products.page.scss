@@ -1,0 +1,69 @@
+@use '../../../theme/mixins' as mixins;
+
+.state-container {
+  @include mixins.flex-center;
+  flex-direction: column;
+  height: 60vh;
+  text-align: center;
+  color: var(--ion-color-medium);
+
+  ion-spinner {
+    width: 40px;
+    height: 40px;
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+.error-state {
+  h2 {
+    margin-top: 0;
+  }
+}
+
+.retry-btn {
+  margin-top: var(--spacing-md);
+}
+
+.product-item {
+  --padding-start: var(--spacing-md);
+  --padding-end: var(--spacing-md);
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-radius: var(--radius-md);
+  @include mixins.card-shadow;
+  
+  .product-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--ion-color-dark);
+    margin-bottom: 4px;
+    white-space: normal;
+  }
+  
+  .product-price {
+    font-weight: 500;
+    color: var(--ion-color-primary);
+    font-size: 1rem;
+  }
+}
+
+.product-thumb {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
