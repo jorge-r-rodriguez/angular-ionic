@@ -8,10 +8,35 @@
   <div class="login-container">
     <ion-card class="login-card">
       <ion-card-header>
-        <ion-card-title class="ion-text-center">Catalogo de productos</ion-card-title>
+        <ion-card-title class="ion-text-center">Iniciar sesion</ion-card-title>
       </ion-card-header>
       <ion-card-content class="ion-text-center">
-        <p>Pulsa en Entrar para ir al listado.</p>
+        <p class="login-hint">Usa cualquier valor para continuar.</p>
+
+        <div class="login-form">
+          <div class="field-group">
+            <ion-input
+              id="login-user"
+              class="login-input"
+              placeholder="Usuario"
+              inputmode="text"
+              autocomplete="username"
+              fill="outline"
+            ></ion-input>
+          </div>
+
+          <div class="field-group">
+            <ion-input
+              id="login-password"
+              class="login-input"
+              type="password"
+              placeholder="Contrasena"
+              autocomplete="current-password"
+              fill="outline"
+            ></ion-input>
+          </div>
+        </div>
+
         <ion-button expand="block" (click)="login()" class="login-button">
           Entrar
         </ion-button>

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
+  IonInput,
   IonContent,
   IonHeader,
   IonToolbar,
@@ -19,6 +20,7 @@ import {
   styleUrls: ['./login.page.scss'],
   standalone: true,
   imports: [
+    IonInput,
     IonContent,
     IonHeader,
     IonToolbar,
