@@ -13,6 +13,34 @@
   @include mixins.card-shadow;
 }
 
+.login-hint {
+  margin-top: 2px;
+  margin-bottom: 14px;
+  color: var(--ion-color-medium);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.field-group {
+  text-align: left;
+}
+
+.login-input {
+  --background: #f7f9ff;
+  --border-radius: 12px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --highlight-color-focused: var(--ion-color-primary);
+  --border-color: #dfe4f1;
+  --border-color-focused: #3b82f6;
+  --placeholder-color: #8a93a8;
+}
+
 .login-button {
   margin-top: var(--spacing-md);
 }
