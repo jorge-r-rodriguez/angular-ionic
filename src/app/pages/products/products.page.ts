@@ -67,6 +67,16 @@ export class ProductsPage implements OnInit {
     this.loadProducts();
   }
 
+  ionViewWillEnter(): void {
+    if (!this.searchTerm) {
+      return;
+    }
+
+    this.searchTerm = '';
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
+  }
+
   loadProducts(): void {
     this.isLoading = true;
     this.errorMessage = '';
