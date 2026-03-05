@@ -22,6 +22,8 @@ Endpoints usados:
   - imagen
   - nombre
   - precio
+  - buscador por nombre (filtro en tiempo real)
+  - boton de limpiar filtros
   - paginacion (8 elementos por pagina)
 - Pantalla de detalle de producto con:
   - imagen
