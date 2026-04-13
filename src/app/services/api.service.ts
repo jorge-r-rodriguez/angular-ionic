@@ -3,7 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { Observable, catchError, from, map, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Product, ProductsResponse, ProductResponse } from '../models/product';
+import { mapPrestashopProduct } from '../mappers/product.mapper';
+import { Product } from '../models/product';
+import {
+  PrestashopProductDto,
+  ProductResponseDto,
+  ProductsResponseDto,
+} from '../models/prestashop-product';
 
 @Injectable({
   providedIn: 'root'
@@ -43,9 +49,9 @@ export class ApiService {
     const url =
       `${this.baseUrl}/products?display=[id,name,price,id_default_image]&output_format=JSON`;
 
-    return this.http.get<ProductsResponse>(url, { headers: this.getHeaders() }).pipe(
+    return this.http.get<ProductsResponseDto>(url, { headers: this.getHeaders() }).pipe(
       map((response) => response.products ?? []),
-      map((products) => products.map((product) => this.normalizeProduct(product))),
+      map((products) => products.map((product) => this.mapProduct(product))),
       catchError((error) => {
         console.error('Error fetching product list', error);
         return throwError(() => new Error('No se pudo obtener el listado de productos.'));
@@ -60,12 +66,12 @@ export class ApiService {
 
     const url = `${this.baseUrl}/products/${id}?output_format=JSON`;
 
-    return this.http.get<ProductResponse>(url, { headers: this.getHeaders() }).pipe(
+    return this.http.get<ProductResponseDto>(url, { headers: this.getHeaders() }).pipe(
       map((response) => {
         if (!response.product) {
           throw new Error('Producto no encontrado.');
         }
-        return this.normalizeProduct(response.product);
+        return this.mapProduct(response.product);
       }),
       catchError((error) => {
         console.error(`Error fetching product ${id}`, error);
@@ -87,9 +93,9 @@ export class ApiService {
         },
       })
     ).pipe(
-      map((response) => this.parseNativeData<ProductsResponse>(response.data)),
+      map((response) => this.parseNativeData<ProductsResponseDto>(response.data)),
       map((response) => response.products ?? []),
-      map((products) => products.map((product) => this.normalizeProduct(product))),
+      map((products) => products.map((product) => this.mapProduct(product))),
       catchError((error) => {
         console.error('Native error fetching product list', error);
         return throwError(() => new Error('No se pudo obtener el listado de productos.'));
@@ -109,13 +115,13 @@ export class ApiService {
         },
       })
     ).pipe(
-      map((response) => this.parseNativeData<ProductResponse>(response.data)),
+      map((response) => this.parseNativeData<ProductResponseDto>(response.data)),
       map((response) => {
         if (!response.product) {
           throw new Error('Producto no encontrado.');
         }
 
-        return this.normalizeProduct(response.product);
+        return this.mapProduct(response.product);
       }),
       catchError((error) => {
         console.error(`Native error fetching product ${id}`, error);
@@ -132,23 +138,10 @@ export class ApiService {
     return data as T;
   }
 
-  private normalizeProduct(product: Product): Product {
-    const imageId = this.getProductImageId(product);
-
-    return {
-      ...product,
-      id: Number(product.id),
-      imageUrl: imageId ? this.buildProductImageUrl(product.id, imageId) : undefined,
-    };
-  }
-
-  private getProductImageId(product: Product): string | number | null {
-    if (product.id_default_image) {
-      return product.id_default_image;
-    }
-
-    const firstImageId = product.associations?.images?.[0]?.id;
-    return firstImageId ?? null;
+  private mapProduct(product: PrestashopProductDto): Product {
+    return mapPrestashopProduct(product, (productId, imageId) =>
+      this.buildProductImageUrl(productId, imageId)
+    );
   }
 
   private buildProductImageUrl(

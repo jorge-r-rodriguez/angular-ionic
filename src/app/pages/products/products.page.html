@@ -11,141 +11,157 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <section class="catalog-hero" *ngIf="!isLoading && !errorMessage">
-    <span class="meta-chip hero-count-chip">{{ totalProducts }} productos</span>
-    <h1 class="hero-title">Productos</h1>
-    <p class="hero-subtitle">Explora el catalogo y revisa el detalle de cada producto.</p>
+  @if (!isLoading && !errorMessage) {
+    <section class="catalog-hero">
+      <span class="meta-chip hero-count-chip">{{ totalProducts }} productos</span>
+      <h1 class="hero-title">Productos</h1>
+      <p class="hero-subtitle">Explora el catalogo y revisa el detalle de cada producto.</p>
 
-    <div class="search-box">
-      <ion-icon name="search-outline"></ion-icon>
-      <input
-        type="search"
-        placeholder="Buscar producto"
-        [value]="searchTerm"
-        (input)="onSearchChange($event)"
-      />
-    </div>
-
-    <div class="sort-row">
-      <button class="sort-chip" [class.active]="isSortActive('featured')" (click)="setSortMode('featured')">
-        Top
-      </button>
-      <button class="sort-chip" [class.active]="isSortActive('nameAsc')" (click)="setSortMode('nameAsc')">
-        A-Z
-      </button>
-      <button
-        class="sort-chip"
-        [class.active]="isSortActive('priceAsc')"
-        (click)="setSortMode('priceAsc')"
-        aria-label="Ordenar por menor precio"
-        title="Ordenar por menor precio"
-      >
-        Menor $
-      </button>
-      <button
-        class="sort-chip"
-        [class.active]="isSortActive('priceDesc')"
-        (click)="setSortMode('priceDesc')"
-        aria-label="Ordenar por mayor precio"
-        title="Ordenar por mayor precio"
-      >
-        Mayor $
-      </button>
-    </div>
-  </section>
-
-  <div *ngIf="isLoading" class="state-container">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Cargando productos...</p>
-
-    <div class="skeleton-list">
-      <div class="skeleton-card" *ngFor="let _ of skeletonItems">
-        <div class="skeleton-thumb"></div>
-        <div class="skeleton-lines">
-          <div class="line line-title"></div>
-          <div class="line line-price"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="errorMessage && !isLoading" class="state-container error-state">
-    <ion-text color="danger">
-      <h2>Error al cargar datos</h2>
-      <p>{{ errorMessage }}</p>
-    </ion-text>
-    <ion-button (click)="loadProducts()" fill="outline" class="retry-btn">
-      Reintentar
-    </ion-button>
-  </div>
-
-  <div *ngIf="!isLoading && !errorMessage && filteredProducts.length === 0" class="state-container empty-state">
-    <h3>No encontramos resultados</h3>
-    <p>Prueba con otro nombre o cambia el orden.</p>
-    <ion-button fill="outline" (click)="clearFilters()">Limpiar filtros</ion-button>
-  </div>
-
-  <ion-list *ngIf="!isLoading && !errorMessage && filteredProducts.length > 0" class="products-list">
-    <ion-item
-      *ngFor="let product of pagedProducts"
-      lines="none"
-      button
-      detail="true"
-      class="product-item"
-      (click)="goToDetail(product)"
-    >
-      <div class="product-thumb" slot="start">
-        <img
-          [src]="getProductImage(product)"
-          [alt]="getProductName(product)"
-          loading="lazy"
-          (error)="onImageError($event)"
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <input
+          type="search"
+          placeholder="Buscar producto"
+          [value]="searchTerm"
+          (input)="onSearchChange($event)"
         />
       </div>
 
-      <ion-label>
-        <h2 class="product-name">{{ getProductName(product) }}</h2>
-        <p class="product-price">{{ getProductPrice(product) }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+      <div class="sort-row">
+        <button class="sort-chip" [class.active]="isSortActive('featured')" (click)="setSortMode('featured')">
+          Top
+        </button>
+        <button class="sort-chip" [class.active]="isSortActive('nameAsc')" (click)="setSortMode('nameAsc')">
+          A-Z
+        </button>
+        <button
+          class="sort-chip"
+          [class.active]="isSortActive('priceAsc')"
+          (click)="setSortMode('priceAsc')"
+          aria-label="Ordenar por menor precio"
+          title="Ordenar por menor precio"
+        >
+          Menor $
+        </button>
+        <button
+          class="sort-chip"
+          [class.active]="isSortActive('priceDesc')"
+          (click)="setSortMode('priceDesc')"
+          aria-label="Ordenar por mayor precio"
+          title="Ordenar por mayor precio"
+        >
+          Mayor $
+        </button>
+      </div>
+    </section>
+  }
 
-  <div *ngIf="!isLoading && !errorMessage && totalProducts > pageSize" class="paginator sticky-paginator">
-    <ion-button
-      class="pager-arrow"
-      size="small"
-      fill="outline"
-      [disabled]="currentPage === 1"
-      (click)="goToPreviousPage()"
-      aria-label="Pagina anterior"
-    >
-      ‹
-    </ion-button>
+  @if (isLoading) {
+    <div class="state-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Cargando productos...</p>
 
-    <div class="pager-numbers">
-      <ion-button
-        *ngFor="let page of getVisiblePages()"
-        class="pager-page"
-        size="small"
-        [fill]="page === currentPage ? 'solid' : 'outline'"
-        [color]="page === currentPage ? 'primary' : 'medium'"
-        (click)="goToPage(page)"
-      >
-        {{ page }}
+      <div class="skeleton-list">
+        @for (_ of skeletonItems; track $index) {
+          <div class="skeleton-card">
+            <div class="skeleton-thumb"></div>
+            <div class="skeleton-lines">
+              <div class="line line-title"></div>
+              <div class="line line-price"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (errorMessage && !isLoading) {
+    <div class="state-container error-state">
+      <ion-text color="danger">
+        <h2>Error al cargar datos</h2>
+        <p>{{ errorMessage }}</p>
+      </ion-text>
+      <ion-button (click)="loadProducts()" fill="outline" class="retry-btn">
+        Reintentar
       </ion-button>
     </div>
+  }
 
-    <div class="pager-meta">{{ currentPage }} / {{ totalPages }}</div>
+  @if (!isLoading && !errorMessage && filteredProducts.length === 0) {
+    <div class="state-container empty-state">
+      <h3>No encontramos resultados</h3>
+      <p>Prueba con otro nombre o cambia el orden.</p>
+      <ion-button fill="outline" (click)="clearFilters()">Limpiar filtros</ion-button>
+    </div>
+  }
 
-    <ion-button
-      class="pager-arrow"
-      size="small"
-      fill="outline"
-      [disabled]="currentPage === totalPages"
-      (click)="goToNextPage()"
-      aria-label="Pagina siguiente"
-    >
-      ›
-    </ion-button>
-  </div>
+  @if (!isLoading && !errorMessage && filteredProducts.length > 0) {
+    <ion-list class="products-list">
+      @for (product of pagedProducts; track product.id) {
+        <ion-item
+          lines="none"
+          button
+          detail="true"
+          class="product-item"
+          (click)="goToDetail(product)"
+        >
+          <div class="product-thumb" slot="start">
+            <img
+              [src]="product.imageUrl || fallbackImage"
+              [alt]="product.name"
+              loading="lazy"
+              (error)="onImageError($event)"
+            />
+          </div>
+
+          <ion-label>
+            <h2 class="product-name">{{ product.name }}</h2>
+            <p class="product-price">{{ product.priceLabel }}</p>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  @if (!isLoading && !errorMessage && totalProducts > pageSize) {
+    <div class="paginator sticky-paginator">
+      <ion-button
+        class="pager-arrow"
+        size="small"
+        fill="outline"
+        [disabled]="currentPage === 1"
+        (click)="goToPreviousPage()"
+        aria-label="Pagina anterior"
+      >
+        ‹
+      </ion-button>
+
+      <div class="pager-numbers">
+        @for (page of getVisiblePages(); track page) {
+          <ion-button
+            class="pager-page"
+            size="small"
+            [fill]="page === currentPage ? 'solid' : 'outline'"
+            [color]="page === currentPage ? 'primary' : 'medium'"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </ion-button>
+        }
+      </div>
+
+      <div class="pager-meta">{{ currentPage }} / {{ totalPages }}</div>
+
+      <ion-button
+        class="pager-arrow"
+        size="small"
+        fill="outline"
+        [disabled]="currentPage === totalPages"
+        (click)="goToNextPage()"
+        aria-label="Pagina siguiente"
+      >
+        ›
+      </ion-button>
+    </div>
+  }
 </ion-content>

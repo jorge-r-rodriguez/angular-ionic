@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
   IonInput,
@@ -28,7 +27,6 @@ import {
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    CommonModule,
   ],
 })
 export class LoginPage {
