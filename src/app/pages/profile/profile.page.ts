@@ -1,5 +1,4 @@
 ﻿import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { businessOutline, mailOutline, person } from 'ionicons/icons';
@@ -38,7 +37,6 @@ import {
     IonItem,
     IonLabel,
     IonToolbar,
-    CommonModule,
   ],
 })
 export class ProfilePage {

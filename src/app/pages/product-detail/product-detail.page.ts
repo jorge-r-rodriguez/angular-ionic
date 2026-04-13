@@ -1,5 +1,4 @@
 ﻿import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
   IonBackButton,
@@ -17,7 +16,7 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { ApiService } from '../../services/api.service';
-import { Product, getFormattedPrice, getLocalizedText } from '../../models/product';
+import { Product } from '../../models/product';
 
 @Component({
   selector: 'app-product-detail',
@@ -38,7 +37,6 @@ import { Product, getFormattedPrice, getLocalizedText } from '../../models/produ
     IonSpinner,
     IonText,
     IonToolbar,
-    CommonModule,
     RouterLink,
   ],
 })
@@ -78,29 +76,6 @@ export class ProductDetailPage implements OnInit {
         this.isLoading = false;
       },
     });
-  }
-
-  getProductName(): string {
-    return getLocalizedText(this.product?.name, 'Producto sin nombre');
-  }
-
-  getProductPrice(): string {
-    if (!this.product) {
-      return 'EUR 0.00';
-    }
-
-    return getFormattedPrice(this.product.price);
-  }
-
-  getProductDescription(): string {
-    return getLocalizedText(
-      this.product?.description ?? this.product?.description_short,
-      'No hay descripcion disponible para este producto.'
-    );
-  }
-
-  getProductImage(): string {
-    return this.product?.imageUrl ?? this.fallbackImage;
   }
 
   onImageError(event: Event): void {

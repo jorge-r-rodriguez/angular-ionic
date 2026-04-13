@@ -1,5 +1,4 @@
 ﻿import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { personOutline, searchOutline } from 'ionicons/icons';
@@ -16,9 +15,8 @@ import {
   IonToolbar,
 } from '@ionic/angular/standalone';
 import { ApiService } from '../../services/api.service';
-import { Product, getFormattedPrice, getLocalizedText } from '../../models/product';
-
-type SortMode = 'featured' | 'nameAsc' | 'priceAsc' | 'priceDesc';
+import { Product } from '../../models/product';
+import { ProductCatalogService, SortMode } from '../../services/product-catalog.service';
 
 @Component({
   selector: 'app-products',
@@ -36,12 +34,12 @@ type SortMode = 'featured' | 'nameAsc' | 'priceAsc' | 'priceDesc';
     IonSpinner,
     IonText,
     IonToolbar,
-    CommonModule,
     RouterLink,
   ],
 })
 export class ProductsPage implements OnInit {
   private readonly apiService = inject(ApiService);
+  private readonly catalogService = inject(ProductCatalogService);
   private readonly router = inject(Router);
 
   products: Product[] = [];
@@ -74,7 +72,7 @@ export class ProductsPage implements OnInit {
 
     this.searchTerm = '';
     this.currentPage = 1;
-    this.applyFiltersAndPagination();
+    this.syncCatalogState();
   }
 
   loadProducts(): void {
@@ -85,7 +83,7 @@ export class ProductsPage implements OnInit {
       next: (products) => {
         this.products = products;
         this.currentPage = 1;
-        this.applyFiltersAndPagination();
+        this.syncCatalogState();
         this.isLoading = false;
       },
       error: (error: Error) => {
@@ -104,7 +102,7 @@ export class ProductsPage implements OnInit {
     const input = event.target as HTMLInputElement | null;
     this.searchTerm = input?.value ?? '';
     this.currentPage = 1;
-    this.applyFiltersAndPagination();
+    this.syncCatalogState();
   }
 
   setSortMode(mode: SortMode): void {
@@ -114,26 +112,18 @@ export class ProductsPage implements OnInit {
 
     this.sortMode = mode;
     this.currentPage = 1;
-    this.applyFiltersAndPagination();
+    this.syncCatalogState();
   }
 
   clearFilters(): void {
     this.searchTerm = '';
     this.sortMode = 'featured';
     this.currentPage = 1;
-    this.applyFiltersAndPagination();
+    this.syncCatalogState();
   }
 
   isSortActive(mode: SortMode): boolean {
     return this.sortMode === mode;
-  }
-
-  getProductName(product: Product): string {
-    return getLocalizedText(product.name, 'Producto sin nombre');
-  }
-
-  getProductPrice(product: Product): string {
-    return getFormattedPrice(product.price);
   }
 
   goToPage(page: number): void {
@@ -142,7 +132,7 @@ export class ProductsPage implements OnInit {
     }
 
     this.currentPage = page;
-    this.updatePagedProducts();
+    this.syncCatalogState();
   }
 
   goToNextPage(): void {
@@ -154,26 +144,7 @@ export class ProductsPage implements OnInit {
   }
 
   getVisiblePages(): number[] {
-    const maxVisible = 3;
-
-    if (this.totalPages <= maxVisible) {
-      return Array.from({ length: this.totalPages }, (_, index) => index + 1);
-    }
-
-    const half = Math.floor(maxVisible / 2);
-    let start = Math.max(1, this.currentPage - half);
-    let end = start + maxVisible - 1;
-
-    if (end > this.totalPages) {
-      end = this.totalPages;
-      start = end - maxVisible + 1;
-    }
-
-    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
-  }
-
-  getProductImage(product: Product): string {
-    return product.imageUrl ?? this.fallbackImage;
+    return this.catalogService.getVisiblePages(this.currentPage, this.totalPages);
   }
 
   onImageError(event: Event): void {
@@ -183,45 +154,18 @@ export class ProductsPage implements OnInit {
     }
   }
 
-  private applyFiltersAndPagination(): void {
-    const normalizedSearch = this.searchTerm.trim().toLowerCase();
+  private syncCatalogState(): void {
+    const state = this.catalogService.buildState(this.products, {
+      searchTerm: this.searchTerm,
+      sortMode: this.sortMode,
+      currentPage: this.currentPage,
+      pageSize: this.pageSize,
+    });
 
-    let list = [...this.products];
-
-    if (normalizedSearch) {
-      list = list.filter((product) =>
-        this.getProductName(product).toLowerCase().includes(normalizedSearch)
-      );
-    }
-
-    if (this.sortMode === 'nameAsc') {
-      list.sort((a, b) => this.getProductName(a).localeCompare(this.getProductName(b)));
-    }
-
-    if (this.sortMode === 'priceAsc' || this.sortMode === 'priceDesc') {
-      const factor = this.sortMode === 'priceAsc' ? 1 : -1;
-      list.sort((a, b) => (this.toNumericPrice(a.price) - this.toNumericPrice(b.price)) * factor);
-    }
-
-    this.filteredProducts = list;
-    this.totalProducts = list.length;
-    this.totalPages = Math.max(1, Math.ceil(this.totalProducts / this.pageSize));
-
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = this.totalPages;
-    }
-
-    this.updatePagedProducts();
-  }
-
-  private updatePagedProducts(): void {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.pagedProducts = this.filteredProducts.slice(startIndex, endIndex);
-  }
-
-  private toNumericPrice(price: string | number): number {
-    const numeric = typeof price === 'string' ? Number.parseFloat(price) : Number(price);
-    return Number.isNaN(numeric) ? 0 : numeric;
+    this.filteredProducts = state.filteredProducts;
+    this.pagedProducts = state.pagedProducts;
+    this.totalProducts = state.totalProducts;
+    this.totalPages = state.totalPages;
+    this.currentPage = state.currentPage;
   }
 }
