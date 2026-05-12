@@ -16,9 +16,16 @@ import {
 })
 export class ApiService {
   private readonly baseUrl = this.getBaseUrl();
-  private readonly apiKey = environment.apiKey;
+  private readonly apiKey = this.getApiKey();
   private readonly http = inject(HttpClient);
   private readonly isNative = Capacitor.isNativePlatform();
+
+  private getApiKey(): string {
+    const localConfig = (globalThis as { __APP_CONFIG__?: { apiKey?: string } })
+      .__APP_CONFIG__;
+
+    return localConfig?.apiKey?.trim() || environment.apiKey;
+  }
 
   private getBaseUrl(): string {
     const isLocalhost =

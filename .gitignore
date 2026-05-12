@@ -45,6 +45,8 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+src/assets/config/local-config.json
+android/app/src/main/assets/public/assets/config/local-config.json
 
 # ------------------------------
 # Capacitor / Android / iOS artifacts

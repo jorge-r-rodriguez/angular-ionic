@@ -69,7 +69,7 @@ src/theme/
 - En su mayoria se utilizo la interfaz visual por defecto de Ionic (componentes base y estilos nativos) por practicidad, consistencia entre plataformas y optimizacion de tiempos dentro del alcance de la prueba tecnica.
 
 ## Requisitos previos
-- Node.js 20+ recomendado
+- Node.js 22+ recomendado para Capacitor CLI 8
 - npm
 - Android Studio
 - JDK 17 (requerido por AGP 8.x)
@@ -159,4 +159,4 @@ El APK fue compilado y probado correctamente en **Android Studio** y en **dispos
 
 ## Notas
 - El login es de demostracion: no existe autenticacion real.
-- El API Key esta en `environment` por tratarse de una prueba tecnica.
+- El API Key real no se versiona. Crear `src/assets/config/local-config.json` a partir de `src/assets/config/local-config.example.json`; ese archivo local esta ignorado por Git y se copia al build web/Android.

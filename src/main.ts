@@ -6,11 +6,34 @@ import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-    provideHttpClient(),
-  ],
+interface AppConfig {
+  apiKey?: string;
+}
+
+const loadLocalConfig = async (): Promise<void> => {
+  try {
+    const response = await fetch('assets/config/local-config.json', {
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    (globalThis as { __APP_CONFIG__?: AppConfig }).__APP_CONFIG__ =
+      await response.json() as AppConfig;
+  } catch {
+    // Local config is optional. The app falls back to environment values.
+  }
+};
+
+loadLocalConfig().finally(() => {
+  bootstrapApplication(AppComponent, {
+    providers: [
+      { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+      provideIonicAngular(),
+      provideRouter(routes, withPreloading(PreloadAllModules)),
+      provideHttpClient(),
+    ],
+  });
 });
