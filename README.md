@@ -1,6 +1,6 @@
-# Prueba tecnica Ionic + Angular + PrestaShop
+# PrestaShop App con Angular + Ionic
 
-Aplicacion movil desarrollada con Ionic + Angular que consume el Webservice de PrestaShop para mostrar un catalogo de productos y su detalle.
+Aplicacion movil desarrollada con Angular + Ionic que consume la API de PrestaShop para mostrar un catalogo de productos y su detalle.
 
 ## Stack tecnico
 - Angular `20.3.20`
@@ -180,7 +180,7 @@ Auditoria de dependencias:
 npm audit --audit-level=moderate
 ```
 
-Flujo recomendado antes de entregar:
+Flujo recomendado de verificacion:
 ```bash
 npm audit --audit-level=moderate
 npm test -- --watch=false --browsers=ChromeHeadless
